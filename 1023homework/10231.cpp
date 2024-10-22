@@ -2,13 +2,13 @@
 using  namespace std;
 int ackermann(int m, int n)
 {
-	if (m == 0)
+	if (m == 0) //M=0的情況
 	{
 		return n + 1;
 	}
-	else if (n == 0)
+	else if (n == 0) //N=0的情況
 	{
-		return ackermann(m - 1, 1);
+		return ackermann(m - 1, 1); 
 	}
 	else
 	{
