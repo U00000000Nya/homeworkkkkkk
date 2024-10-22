@@ -7,7 +7,7 @@ void powerset(int numbernow,int size)
     }
     for (int i = size - 1; i >= 0; --i) {
         if (numbernow & (1 << i)) { //判斷i推過去的位元是否為1
-            cout << (char)('A' + i) << " "; 
+            cout << (char)('a' + i) << " "; 
         }
         else{
             cout<<"  ";
