@@ -9,7 +9,7 @@ void size_change_size(int *&arr,int size,int new_size) {
 		new_arr[i] = 0;
 	}
 	delete[] recycler; //把舊的蛋雕
-	arr = new_arr;
+	arr = *&new_arr;
 }
 
 void print_arr(int* arr, int size) {
