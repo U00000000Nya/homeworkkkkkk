@@ -13,38 +13,50 @@ private:
 class Polynomial {
 public:
     // 建構子
-    Polynomial() : termArray(NULL), capacity(0), terms(0) {}
+    Polynomial() : termArray(nullptr), capacity(0), terms(0) {}
 
-    // 設定容量的建構子
     Polynomial(int capacity) {
         this->capacity = capacity;
         terms = 0;
         termArray = new Term[capacity];
     }
 
-    // 解構子
     ~Polynomial() {
+        
     }
 
     // 輸入多項式
     void Input() {
-        cout << "輸入多項式項數: ";
-        int n;
-        cin >> n;
-        if (n > capacity) Copy(n); // 如果超過容量則擴充
-        terms = 0;
-        for (int i = 0; i < n; i++) {
-            cout << "輸入第 " << (i + 1) << " 項的 係數與指數: ";
+        cout << "輸入多項式(格式:3x^2 4x 5,每項用空格分隔，結束輸入按 Enter):";
+        while (true) {
             float coef;
             int exp;
-            cin >> coef >> exp;
+            char variable, caret;
+            cin >> coef;
+            if (cin.peek() == '\n' || !cin) {
+                AddTerm(coef, 0);
+                break;
+            }
+            cin >> variable; // 讀取 'x'
+            if (variable == 'x') {
+                if (cin.peek() == '^') {
+                    cin >> caret >> exp; // 讀取 '^' 和指數
+                }
+                else {
+                    exp = 1; // 如果沒有 ^，預設指數為 1
+                }
+            }
+            else {
+                exp = 0; // 如果沒有 x，指數為 0
+            }
             AddTerm(coef, exp);
+            if (cin.peek() == '\n') break; // 如果換行符則結束
         }
     }
 
     // 多項式相加
     Polynomial Add(Polynomial poly) {
-        Polynomial result(max(capacity, poly.capacity)); // 計算合適的容量
+        Polynomial result(max(capacity, poly.capacity));
         int i = 0, j = 0;
         while (i < terms && j < poly.terms) {
             if (termArray[i].exp == poly.termArray[j].exp) {
@@ -75,7 +87,7 @@ public:
 
     // 多項式相乘
     Polynomial Mult(Polynomial poly) {
-        Polynomial result(terms * poly.terms); // 根據項數分配容量
+        Polynomial result(terms * poly.terms);
         for (int i = 0; i < terms; i++) {
             for (int j = 0; j < poly.terms; j++) {
                 float newCoef = termArray[i].coef * poly.termArray[j].coef;
@@ -110,15 +122,14 @@ public:
     }
 
 private:
-    Term* termArray; // 儲存多項式的項目
-    int capacity;    // 設定容量
-    int terms;       // 當前項數
+    Term* termArray;
+    int capacity;
+    int terms;
 
     // 新增項目
     void AddTerm(float coef, int exp) {
         if (coef == 0) return;
         if (terms >= capacity) {
-            // 如果容量已滿，則擴充
             Copy(capacity * 2);
         }
         termArray[terms].coef = coef;
@@ -143,7 +154,7 @@ private:
                 return;
             }
         }
-        AddTerm(coef, exp);  // 如果沒有匹配的指數，新增項目
+        AddTerm(coef, exp);
     }
 };
 
@@ -151,11 +162,11 @@ int main() {
     Polynomial p1(10), p2(10);
 
     // 輸入第一個多項式
-    cout << "輸入第一個多項式:" << endl;
+    cout << "第一個多項式" << endl;
     p1.Input();
 
     // 輸入第二個多項式
-    cout << "輸入第二個多項式:" << endl;
+    cout << "第二個多項式" << endl;
     p2.Input();
 
     cout << "多項式 P1 = ";
