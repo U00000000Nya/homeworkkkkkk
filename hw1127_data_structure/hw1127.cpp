@@ -1,12 +1,15 @@
 #include <iostream>
 #include <algorithm>
 #include <cmath> // 使用 pow 函數來計算次方
+#include <chrono> // 宣告 chrono 用於高解析度計時
+#include <iomanip> // for setprecision
 using namespace std;
+using namespace chrono;
 
 // Term 類別用來表示多項式的一項
 class Term {
     friend class Polynomial; // 讓 Polynomial 類別可以訪問 Term 類別的私有成員
-    friend ostream& operator<<(ostream& output, const Polynomial& p); // 友元函式，用於輸出 Polynomial 類別
+    friend ostream& operator<<(ostream& output, const Polynomial& p); // friend，用於輸出 Polynomial 類別
 private:
     float coef; // 係數
     int exp;    // 指數
@@ -14,8 +17,8 @@ private:
 
 // Polynomial 類別用來表示多項式，包含多項式的操作
 class Polynomial {
-    friend istream& operator>>(istream& input, Polynomial& p); // 友元函式，用於輸入 Polynomial 類別
-    friend ostream& operator<<(ostream& output, const Polynomial& p); // 友元函式，用於輸出 Polynomial 類別
+    friend istream& operator>>(istream& input, Polynomial& p); // friend，用於輸入 Polynomial 類別
+    friend ostream& operator<<(ostream& output, const Polynomial& p); // friend，用於輸出 Polynomial 類別
 public:
     // 預設建構子
     Polynomial() : termArray(nullptr), capacity(0), terms(0) {}
@@ -123,7 +126,7 @@ private:
     }
 };
 
-// 運算子 << 重載，用於將多項式輸出
+// 運算子 << 多載，用於將多項式輸出
 ostream& operator<<(ostream& output, const Polynomial& p) {
     if (p.terms == 0) {
         output << "0"; // 若多項式無項目，輸出 0
@@ -137,7 +140,7 @@ ostream& operator<<(ostream& output, const Polynomial& p) {
     return output;
 }
 
-// 運算子 >> 重載，用於輸入多項式
+// 運算子 >> 多載，用於輸入多項式
 istream& operator>>(istream& input, Polynomial& p) {
     float t_coef;
     int t_exp;
@@ -189,23 +192,30 @@ int main() {
     cout << "輸入第二個多項式 (格式：2x^3 +x -7):";
     cin >> p2;
 
-    // 輸出多項式
+    //輸出多項式
     cout << "多項式 P1 = " << p1 << endl;
     cout << "多項式 P2 = " << p2 << endl;
 
     // 多項式相加
+    auto start_add = high_resolution_clock::now();
     Polynomial sum = p1.Add(p2);
     cout << "P1 + P2 = " << sum << endl;
+    auto end_add = high_resolution_clock::now();
+    auto add_duration = duration_cast<nanoseconds>(end_add - start_add).count(); // 計時
+    cout << "Add() 需時：" << add_duration / 1e6 << " ms" << endl; // 轉換為毫秒並輸出
 
-    // 多項式相乘
+// 多項式相乘
+    auto start_mult = high_resolution_clock::now();
     Polynomial product = p1.Mult(p2);
     cout << "P1 * P2 = " << product << endl;
+    auto end_mult = high_resolution_clock::now();
+    auto mult_duration = duration_cast<nanoseconds>(end_mult - start_mult).count(); // 計時
+    cout << "Mult() 需時：" << mult_duration / 1e6 << " ms" << endl; // 轉換為毫秒並輸出
 
-    // 計算多項式值
+    //計算多項式的值
     float x;
     cout << "輸入 x 的值來計算 P1(x): ";
     cin >> x;
     cout << "P1(x=" << x << ") 的值 = " << p1.Eval(x) << endl;
-
     return 0;
 }
